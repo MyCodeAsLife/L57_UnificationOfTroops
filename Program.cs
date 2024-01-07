@@ -9,7 +9,14 @@ namespace L57_UnificationOfTroops
         static void Main(string[] args)
         {
             Headquarters headquarters = new Headquarters();
+            string transferCondition = "б";
 
+            Console.WriteLine("До перемещения:");
+            headquarters.ShowAllPersonnels();
+
+            headquarters.TransferSoldiers(transferCondition);
+
+            Console.WriteLine("\nПосле перемещения:");
             headquarters.ShowAllPersonnels();
         }
     }
@@ -29,34 +36,28 @@ namespace L57_UnificationOfTroops
             int maxNameLenght = _firstSquad.Max(soldier => soldier.Name.Length);
             int maxRankLenght = _firstSquad.Max(soldier => soldier.Rank.Length);
 
-            Console.WriteLine("До перемещения:\nПервый отряд:");
+            Console.WriteLine("Первый отряд:");
             Show(_firstSquad, maxNameLenght, maxRankLenght);
             Console.WriteLine("\nВторой отряд:");
             Show(_secondSquad, maxNameLenght, maxRankLenght);
             Console.WriteLine("--------------------------------------");
-
-            TransferSoldiers();
-            Console.WriteLine("\nПосле перемещения:\nПервый отряд:");
-            Show(_firstSquad, maxNameLenght, maxRankLenght);
-            Console.WriteLine("\nВторой отряд:");
-            Show(_secondSquad, maxNameLenght, maxRankLenght);
         }
 
-        private void Show(List<Soldier> squad, int maxNameLenght, int maxRankLenght)
+        public void TransferSoldiers(string transferCondition)
         {
-            foreach (var soldier in squad)
-                Console.WriteLine($"{{0, -{maxNameLenght}}} - {{1, -{maxRankLenght}}}", soldier.Name, soldier.Rank);
-        }
-
-        private void TransferSoldiers()
-        {
-            var sortSquad = _firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith("б")).ToList();
+            var sortSquad = _firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith(transferCondition)).ToList();
 
             foreach (var soldier in sortSquad)
             {
                 _firstSquad.Remove(soldier);
                 _secondSquad.Add(soldier);
             }
+        }
+
+        private void Show(List<Soldier> squad, int maxNameLenght, int maxRankLenght)
+        {
+            foreach (var soldier in squad)
+                Console.WriteLine($"{{0, -{maxNameLenght}}} - {{1, -{maxRankLenght}}}", soldier.Name, soldier.Rank);
         }
 
         private void Fill()
