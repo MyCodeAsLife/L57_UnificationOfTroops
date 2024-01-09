@@ -45,13 +45,16 @@ namespace L57_UnificationOfTroops
 
         public void TransferSoldiers(string transferCondition)
         {
-            var sortSquad = _firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith(transferCondition)).ToList();
+            var sortSquad = _secondSquad.Union(_firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith(transferCondition))).ToList();
+            _secondSquad = sortSquad;
+            sortSquad = _firstSquad.SkipWhile(soldier => soldier.Name.ToUpper().StartsWith(transferCondition.ToUpper())).ToList();              // тут=========
+            _firstSquad = sortSquad;
 
-            foreach (var soldier in sortSquad)
-            {
-                _firstSquad.Remove(soldier);
-                _secondSquad.Add(soldier);
-            }
+            //foreach (var soldier in sortSquad)
+            //{
+            //    _firstSquad.Remove(soldier);
+            //    _secondSquad.Add(soldier);
+            //}
         }
 
         private void Show(List<Soldier> squad, int maxNameLenght, int maxRankLenght)
