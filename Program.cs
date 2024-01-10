@@ -33,8 +33,8 @@ namespace L57_UnificationOfTroops
 
         public void ShowAllPersonnels()
         {
-            int maxNameLenght = _firstSquad.Max(soldier => soldier.Name.Length);
-            int maxRankLenght = _firstSquad.Max(soldier => soldier.Rank.Length);
+            int maxNameLenght = GetMaxNameLenght(_firstSquad, _secondSquad);
+            int maxRankLenght = GetMaxRankLenght(_firstSquad, _secondSquad);
 
             Console.WriteLine("Первый отряд:");
             Show(_firstSquad, maxNameLenght, maxRankLenght);
@@ -45,16 +45,22 @@ namespace L57_UnificationOfTroops
 
         public void TransferSoldiers(string transferCondition)
         {
-            var sortSquad = _secondSquad.Union(_firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith(transferCondition))).ToList();
-            _secondSquad = sortSquad;
-            sortSquad = _firstSquad.SkipWhile(soldier => soldier.Name.ToUpper().StartsWith(transferCondition.ToUpper())).ToList();              // тут=========
-            _firstSquad = sortSquad;
+            _secondSquad = _secondSquad.Union(_firstSquad.Where(soldier => soldier.Name.ToLower().StartsWith(transferCondition))).ToList();
+            _firstSquad = _firstSquad.Except(_secondSquad).ToList();
+        }
 
-            //foreach (var soldier in sortSquad)
-            //{
-            //    _firstSquad.Remove(soldier);
-            //    _secondSquad.Add(soldier);
-            //}
+        private int GetMaxNameLenght(List<Soldier> firstSquad, List<Soldier> secondSquad)
+        {
+            int nameLenghtFirstSquad = _firstSquad.Max(soldier => soldier.Name.Length);
+            int nameLenghtSecondSquad = _secondSquad.Max(soldier => soldier.Name.Length);
+            return (nameLenghtFirstSquad > nameLenghtSecondSquad ? nameLenghtFirstSquad : nameLenghtSecondSquad);
+        }
+
+        private int GetMaxRankLenght(List<Soldier> firstSquad, List<Soldier> secondSquad)
+        {
+            int rankLenghtFirstSquad = _firstSquad.Max(soldier => soldier.Rank.Length);
+            int rankLenghtSecondSquad = _secondSquad.Max(soldier => soldier.Rank.Length);
+            return (rankLenghtFirstSquad > rankLenghtSecondSquad ? rankLenghtFirstSquad : rankLenghtSecondSquad);
         }
 
         private void Show(List<Soldier> squad, int maxNameLenght, int maxRankLenght)
